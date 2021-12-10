@@ -71,22 +71,43 @@ function displayMessage(message, id) {
 
 //#region Pong
 //Make the DIV element draggagle:
-const player1Btn = document.getElementById("slot-1")
-const player1SlotTxt = document.getElementById("p1-occupied");
+const player1Btn = document.getElementById("slot-1");
+player1Btn.text = document.getElementById("p1-occupied");
 const player2Btn = document.getElementById("slot-2")
-const player2SlotTxt = document.getElementById("p2-occupied");
+player2Btn.text = document.getElementById("p2-occupied");
+const player1Paddle = document.getElementById("player1");
+const player2Paddle = document.getElementById("player2");
 
 player1Btn.addEventListener("click", function (e) {
-    dragElement(document.getElementById("player1"));
-    player1Btn.classList.toggle("selected")
-    player1SlotTxt.innerText = socket.id.substring(0, 4);
+    if (player2Btn.enabled === true) return
+    if (player1Btn.enabled === true) {
+        resetPlayerSlot(player1Btn, player1Paddle);
+        return;
+    }
+    player1Btn.enabled = true;
+    player1Btn.classList.add('selected');
+    dragElement(player1Paddle);
+    player1Btn.text.innerText = socket.id.substring(0, 4);
 })
 
 player2Btn.addEventListener("click", function (e) {
-    dragElement(document.getElementById("player2"));
-    player2Btn.classList.toggle("selected")
-    player2SlotTxt.innerText = socket.id.substring(0, 4);
+    if (player1Btn.enabled === true) return
+    if (player2Btn.enabled === true) {
+        resetPlayerSlot(player2Btn, player2Paddle);
+        return;
+    }
+    player2Btn.enabled = true;
+    player2Btn.classList.add('selected');
+    dragElement(player2Paddle);
+    player2Btn.text.innerText = socket.id.substring(0, 4);
 })
+
+function resetPlayerSlot(slot, paddle) {
+    paddle.onmousedown = "";
+    slot.enabled = false;
+    slot.classList.remove('selected');
+    slot.text.innerText = "Open";
+}
 
 
 const sandbox = document.getElementById("sandbox");
