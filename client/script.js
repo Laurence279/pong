@@ -16,7 +16,11 @@ const socket = io(`http://localhost:3000`);
 // });
 
 socket.on(`connect`, () => {
-    displayMessage(`You connected with id ${socket.id}`);
+    displayMessage(`You connected with id ${socket.id.substring(0,4)}`);
+})
+
+socket.on(`connect-other`, (id) => {
+    displayMessage(`Someone connected with id ${id.substring(0,4)}, say hi!`)
 })
 
 
@@ -65,11 +69,24 @@ function displayMessage(message, id) {
         document.getElementById("message-container").append(div);
         return;
     }
-    div.textContent = `${id}: ${message}`;
+    div.textContent = `${id.substring(0,4)}: ${message}`;
     document.getElementById("message-container").append(div);
 }
 
 //#region Pong
+
+socket.on(`assign-player1`, id => {
+    displayMessage(`${id.substring(0,4)} is now Player 1.`)
+    player1Btn.classList.add('selected');
+    player1Btn.text.innerText = id.substring(0, 4);
+})
+
+socket.on(`assign-player2`, id => {
+    displayMessage(`${id.substring(0,4)} is now Player 2.`)
+    player2Btn.classList.add('selected');
+    player2Btn.text.innerText = id.substring(0, 4);
+})
+
 //Make the DIV element draggagle:
 const player1Btn = document.getElementById("slot-1");
 player1Btn.text = document.getElementById("p1-occupied");
@@ -79,18 +96,22 @@ const player1Paddle = document.getElementById("player1");
 const player2Paddle = document.getElementById("player2");
 
 player1Btn.addEventListener("click", function (e) {
+    socket.emit(`choose-player1`, socket.id)
+
     if (player2Btn.enabled === true) return
     if (player1Btn.enabled === true) {
         resetPlayerSlot(player1Btn, player1Paddle);
         return;
     }
     player1Btn.enabled = true;
+
     player1Btn.classList.add('selected');
     dragElement(player1Paddle);
     player1Btn.text.innerText = socket.id.substring(0, 4);
 })
 
 player2Btn.addEventListener("click", function (e) {
+    socket.emit(`choose-player2`, socket.id)
     if (player1Btn.enabled === true) return
     if (player2Btn.enabled === true) {
         resetPlayerSlot(player2Btn, player2Paddle);
@@ -155,7 +176,7 @@ function dragElement(elmnt) {
 
 
     const min = -150;
-    const max = 150;
+    const max = 120;
 
     // Clamp number between two values with the following line:
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
