@@ -9,23 +9,40 @@ requests over and over.
 
 */
 const express = require(`express`);
+var cors = require('cors')
 const app = express();
 let port = process.env.PORT;
 if (port == null || port == "") {
-    port = 8080;
+    port = 8000;
 }
-app.get("/", function (req, res) {
-    res.sendFile("C:/Repos/pong/client/index.html")
-})
+
+let server = app.use(express.static('build'))
+    .listen(port, () => console.log(`Listening on ${port}`));
+
+
+const options = {
+    serveClient: false,
+    cookie: false,
+    cors: {
+        origin: "http://localhost:8080",
+        methods: ["GET", "POST"]
+    }
+};
+
+
 
 const {
     instrument
 } = require(`@socket.io/admin-ui`);
-const io = require(`socket.io`)(3000, {
-    cors: {
-        origin: [`http://localhost:8080`, `https://admin.socket.io`],
-    },
-})
+
+const socketIO = require(`socket.io`);
+const io = socketIO(server, options);
+
+
+var expressOptions = {
+    origin: "http://localhost:8080"
+}
+app.use(cors(expressOptions));
 
 const userIo = io.of(`user`);
 userIo.on(`connection`, socket => {
@@ -78,8 +95,4 @@ io.on("connection", socket => {
 
 instrument(io, {
     auth: false
-});
-
-app.listen(port, function () {
-    console.log("Server open on port " + port);
 });

@@ -1,13 +1,13 @@
 import {
     io
-} from "socket.io-client";
+} from "./_snowpack/pkg/socket.io-client.js";
 
 const joinRoomButton = document.getElementById("room-btn");
 const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
 const form = document.getElementById("form");
 
-const socket = io("http://localhost:8000");
+const socket = io();
 // userSocket not being used to now, so no authenticating users etc..
 // const userSocket = io(`http://localhost:3000/user`, {
 //     auth: {
