@@ -8,15 +8,22 @@ WebSocket connects to a server and keeps the connection open instead of making m
 requests over and over.
 
 */
+// const io = require(`socket.io`)(8001, {
+//     cors: {
+//         origin: 'http://localhost:8080' //Where is the client coming from?????
+//     }
+// });
+
+
 const express = require(`express`);
 var cors = require('cors')
 const app = express();
 let port = process.env.PORT;
 if (port == null || port == "") {
-    port = 8000;
+    port = 8002;
 }
 
-let server = app.use(express.static('build'))
+let server = app.use(express.static('/build'))
     .listen(port, () => console.log(`Listening on ${port}`));
 
 
@@ -35,7 +42,7 @@ const {
     instrument
 } = require(`@socket.io/admin-ui`);
 
-const socketIO = require(`socket.io`);
+const socketIO = require("socket.io")
 const io = socketIO(server, options);
 
 
