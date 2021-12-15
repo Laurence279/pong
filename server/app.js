@@ -20,7 +20,7 @@ var cors = require('cors')
 const app = express();
 let port = process.env.PORT;
 if (port == null || port == "") {
-    port = 8002;
+    port = 3000;
 }
 
 let server = app.use(express.static('/build'))

@@ -7,7 +7,7 @@ const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
 const form = document.getElementById("form");
 
-const socket = io("http://localhost:8002"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
+const socket = io("http://localhost:3000"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
 console.log(socket)
 // userSocket not being used to now, so no authenticating users etc..
 // const userSocket = io(`http://localhost:3000/user`, {
@@ -131,8 +131,196 @@ function resetPlayerSlot(slot, paddle) {
     slot.text.innerText = "Open";
 }
 
+//#region Canvas IIFE...
+;
+(function () {
 
-const sandbox = document.getElementById("sandbox");
+    // Config vars
+    let canvas, ctx;
+
+
+    class Paddle {
+        constructor(
+            x = 0, y = 0,
+            width = 0, height = 0,
+            fillColor = '', strokeColor = '', strokeWidth = 2
+        ) {
+            this.x = Number(x)
+            this.y = Number(y)
+            this.width = Number(width)
+            this.height = Number(height)
+            this.fillColor = fillColor
+            this.strokeColor = strokeColor
+            this.strokeWidth = strokeWidth
+        }
+
+        // get keyword causes this method to be called
+        // when you use myRectangle.area
+        get area() {
+            return this.width * this.height
+        }
+
+
+        // gets the X position of the left side
+        get left() {
+            // origin is at top left so just return x
+            return this.x
+        }
+
+        // get X position of right side
+        get right() {
+            // x is left position + the width to get end point
+            return this.x + this.width
+        }
+
+        // get the Y position of top side
+        get top() {
+            // origin is at top left so just return y
+            return this.y
+        }
+
+        // get Y position at bottom
+        get bottom() {
+            return this.y + this.height
+        }
+
+        // draw rectangle to screen
+        draw() {
+            // destructuring
+            const {
+                x,
+                y,
+                width,
+                height,
+                fillColor,
+                strokeColor,
+                strokeWidth
+            } = this
+
+            // saves the current styles set elsewhere
+            // to avoid overwriting them
+            ctx.save()
+
+            // set the styles for this shape
+            ctx.fillStyle = fillColor
+            ctx.lineWidth = strokeWidth
+
+            // create the *path*
+            ctx.beginPath()
+            ctx.strokeStyle = strokeColor
+            ctx.rect(x, y, width, height)
+
+            // draw the path to screen
+            ctx.fill()
+            ctx.stroke()
+
+            // restores the styles from earlier
+            // preventing the colors used here
+            // from polluting other drawings
+            ctx.restore()
+        }
+    }
+
+    function init() {
+        canvas = document.getElementById("sandbox");
+        ctx = sandbox.getContext('2d');
+
+        drawExamples()
+        createGrid();
+    }
+
+    document.addEventListener("DOMContentLoaded", init)
+
+    function drawExamples() {
+
+        /*
+        //Outlined Square X: 50 Y:35, width/height: 50
+        ctx.beginPath();
+        ctx.strokeRect(50, 35, 50, 50)
+
+        // filled square X: 125, Y: 35, width/height 50
+        ctx.beginPath()
+        ctx.fillRect(125, 35, 50, 50)
+
+        // filled, outlined square X: 200, Y: 35, width/height 50
+        ctx.beginPath();
+        ctx.strokeStyle = 'red'
+        ctx.fillStyle = 'blue'
+        ctx.lineWidth = 5;
+        ctx.rect(200, 35, 50, 50)
+        ctx.fill();
+        ctx.stroke();
+        */
+
+        const player1Paddle = new Paddle(15, 52.5, 15, 45, 'lightblue', `black`)
+        const player2Paddle = new Paddle(270, 52.5, 15, 45, 'lightblue', `black`)
+
+
+        console.log(player2Paddle)
+
+        player1Paddle.draw();
+        player2Paddle.draw();
+
+        // ARCS / Circles
+        // usual setup
+        ctx.save()
+        ctx.strokeStyle = 'black'
+        ctx.fillStyle = 'red'
+
+        // x, y, radius, startAngle, endAngle, antiClockwise = false by default
+        ctx.beginPath()
+        ctx.arc(150, 75, 5, 0, 2 * Math.PI, false) // full circle
+        ctx.fill()
+        ctx.stroke()
+
+        ctx.restore()
+
+    }
+
+    // draws a grid
+    function createGrid() {
+        // draw a line every *step* pixels
+        const step = 30
+
+        // our end points
+        const width = canvas.width
+        const height = canvas.height
+
+        // set our styles
+        ctx.save()
+        ctx.strokeStyle = 'gray' // line colors
+        ctx.fillStyle = 'black' // text color
+
+        // draw vertical from X to Height
+        for (let x = 0; x < width; x += step) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+            ctx.fillText(x, x, 12)
+        }
+
+        // draw horizontal from Y to Width
+        for (let y = 0; y < height; y += step) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+            ctx.fillText(y, 0, y)
+        }
+
+        // restore the styles from before this function was called
+        ctx.restore()
+    }
+
+
+
+
+
+
+})()
+
+//#endregion
 
 function dragElement(elmnt) {
     var pos1 = 0,
@@ -186,7 +374,26 @@ function dragElement(elmnt) {
     clamp(50, min, max); // Will return: 50
     clamp(500, min, max); // Will return: 100
 
+
+
 }
+//#endregion
+
+
+setInterval(() => {
+    moveBall(1);
+}, 100);
+
+//#region ball
+const ball = document.getElementById("ball")
+
+
+function moveBall(amount) {
+
+    ball.style.left = `${ball.offsetLeft + amount}px`
+}
+
+
 //#endregion
 
 
