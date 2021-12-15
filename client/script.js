@@ -136,7 +136,7 @@ function resetPlayerSlot(slot, paddle) {
 (function () {
 
     // Config vars
-    let canvas, ctx;
+    let canvas, ctx, gravity, friction, ball;
 
 
     class Paddle {
@@ -225,13 +225,34 @@ function resetPlayerSlot(slot, paddle) {
         canvas = document.getElementById("sandbox");
         ctx = sandbox.getContext('2d');
 
-        drawExamples()
-        createGrid();
+        gravity = 0;
+        friction = 1;
+
+        // begin update loop
+        window.requestAnimationFrame(update)
+
+        // Starting objects..
+
+
+
+
+        ball = {
+            bounce: 0, // energy lost on bounce (25%)
+            radius: 5,
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            // velX: (Math.random() * 5 + 5) * (Math.floor(Math.random() * 1) || -1),
+            // velY: (Math.random() * 5 + 5) * (Math.floor(Math.random() * 1) || -1)
+            velX: (5),
+            velY: (5)
+        }
+
+
     }
 
-    document.addEventListener("DOMContentLoaded", init)
 
-    function drawExamples() {
+
+    function drawPaddles() {
 
         /*
         //Outlined Square X: 50 Y:35, width/height: 50
@@ -250,31 +271,48 @@ function resetPlayerSlot(slot, paddle) {
         ctx.rect(200, 35, 50, 50)
         ctx.fill();
         ctx.stroke();
+
+
+        // // Draw Ball
+        // ctx.save()
+        // ctx.strokeStyle = 'black'
+        // ctx.fillStyle = 'red'
+
+        // // x, y, radius, startAngle, endAngle, antiClockwise = false by default
+
+        // ctx.beginPath()
+        // ctx.arc(150, 75, 5, 0, 2 * Math.PI, false) // full circle
+        // ctx.fill()
+        // ctx.stroke()
+
+        // ctx.restore()
+
         */
 
         const player1Paddle = new Paddle(15, 52.5, 15, 45, 'lightblue', `black`)
         const player2Paddle = new Paddle(270, 52.5, 15, 45, 'lightblue', `black`)
-
 
         console.log(player2Paddle)
 
         player1Paddle.draw();
         player2Paddle.draw();
 
-        // ARCS / Circles
-        // usual setup
-        ctx.save()
+
+    }
+
+    function drawBall() {
+        // Draw Ball
         ctx.strokeStyle = 'black'
         ctx.fillStyle = 'red'
 
         // x, y, radius, startAngle, endAngle, antiClockwise = false by default
+
         ctx.beginPath()
-        ctx.arc(150, 75, 5, 0, 2 * Math.PI, false) // full circle
+        ctx.arc(ball.x, ball.y,
+            ball.radius,
+            0, Math.PI * 2) // full circle
         ctx.fill()
         ctx.stroke()
-
-        ctx.restore()
-
     }
 
     // draws a grid
@@ -313,10 +351,75 @@ function resetPlayerSlot(slot, paddle) {
         ctx.restore()
     }
 
+    function draw() {
+        // clear the canvas and redraw everything
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        drawBall();
+
+
+        drawPaddles();
+        createGrid();
+
+    }
+
+    function update() {
+        console.log("update")
+        // queue the next update
+        window.requestAnimationFrame(update)
+
+        // logic goes here
+
+
+        // bottom bound / floor
+        if (ball.y + ball.radius >= canvas.height) {
+            ball.velY = -ball.velY
+            ball.y = canvas.height - ball.radius
+            ball.velX *= friction
+        }
+        // top bound / ceiling
+        if (ball.y - ball.radius <= 0) {
+            ball.velY = -ball.velY
+            ball.y = ball.radius
+            ball.velX *= friction
+        }
+
+        // left bound
+        if (ball.x - ball.radius <= 0) {
+            ball.velX = -ball.velX
+            ball.x = ball.radius
+        }
+        // right bound
+        if (ball.x + ball.radius >= canvas.width) {
+            ball.velX = -ball.velX
+            ball.x = canvas.width - ball.radius
+        }
+
+        // reset insignificant amounts to 0
+        if (ball.velX < 0.01 && ball.velX > -0.01) {
+            ball.velX = 0
+        }
+        if (ball.velY < 0.01 && ball.velY > -0.01) {
+            ball.velY = 0
+        }
+
+        //Add gravity
+        ball.velY += gravity;
+
+        //Update ball position
+        ball.x += ball.velX;
+        ball.y += ball.velY;
+
+
+
+        // draw after logic/calculations
+        draw()
+    }
 
 
 
 
+    document.addEventListener("DOMContentLoaded", init)
 
 })()
 
