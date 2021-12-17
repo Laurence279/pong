@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <style>
         body {
             margin: 0 auto;
@@ -79,12 +79,13 @@
 
 
 
-        #sandbox {
+        canvas {
             width: 600px;
             border: solid black 1px;
             margin: 1em 0;
             position: relative;
             align-self: center;
+            order: -1;
         }
 
         .player {
@@ -151,12 +152,8 @@
 </head>
 
 <body>
-    <canvas id="sandbox">
 
-        <div class="player" id="player1"></div>
-        <div id="ball"></div>
-        <div class="player" id="player2"></div>
-    </canvas>
+
     <div id="player-slots">
         <div class="slot" id="slot-1">
             <h4>Player 1</h4>
@@ -184,7 +181,12 @@
         </form>
     </div>
 
+
+
+
+
     <script type="module" src="script.js"></script>
+
 </body>
 
 </html>

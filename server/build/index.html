@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     <style>
         body {
             margin: 0 auto;
@@ -14,7 +14,7 @@
             height: 100vh;
             width: 90%;
             max-width: 1200px;
-            justify-content: space-around;
+            justify-content: space-evenly;
         }
 
         #message-container div {
@@ -29,7 +29,7 @@
 
 
         #message-container {
-            height: 100px;
+            height: 250px;
             border: solid black 1px;
             margin: 1em 0 1em 0;
             overflow-y: scroll;
@@ -42,6 +42,7 @@
         #form {
             display: flex;
             flex-direction: column;
+
         }
 
         #form div {
@@ -78,13 +79,13 @@
 
 
 
-        #sandbox {
-            height: 350px;
+        canvas {
             width: 600px;
             border: solid black 1px;
             margin: 1em 0;
             position: relative;
             align-self: center;
+            order: -1;
         }
 
         .player {
@@ -107,6 +108,7 @@
         }
 
         #ball {
+
             height: 20px;
             width: 20px;
             border-radius: 50%;
@@ -117,6 +119,7 @@
         }
 
         #player-slots {
+            margin: 1em;
             width: 400px;
             display: flex;
             justify-content: space-between;
@@ -149,12 +152,8 @@
 </head>
 
 <body>
-    <div id="sandbox">
 
-        <div class="player" id="player1"></div>
-        <div id="ball"></div>
-        <div class="player" id="player2"></div>
-    </div>
+
     <div id="player-slots">
         <div class="slot" id="slot-1">
             <h4>Player 1</h4>
@@ -182,7 +181,12 @@
         </form>
     </div>
 
+
+
+
+
     <script type="module" src="script.js"></script>
+
 </body>
 
 </html>

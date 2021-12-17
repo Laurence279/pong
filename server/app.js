@@ -20,10 +20,10 @@ var cors = require('cors')
 const app = express();
 let port = process.env.PORT;
 if (port == null || port == "") {
-    port = 3000;
+    port = 3001;
 }
 
-let server = app.use(express.static('/build'))
+let server = app.use(express.static('./build'))
     .listen(port, () => console.log(`Listening on ${port}`));
 
 
@@ -31,7 +31,7 @@ const options = {
     serveClient: false,
     cookie: false,
     cors: {
-        origin: "http://localhost:8080",
+        origin: "http://localhost:3001",
         methods: ["GET", "POST"]
     }
 };
@@ -47,7 +47,7 @@ const io = socketIO(server, options);
 
 
 var expressOptions = {
-    origin: "http://localhost:8080"
+    origin: "http://localhost:3001"
 }
 app.use(cors(expressOptions));
 
@@ -70,9 +70,16 @@ userIo.use((socket, next) => {
 function getUsernameFromToken(token) {
     return token
 }
+const roomnum = {
+    room: 1,
+    player1: undefined,
+    player2: undefined
+};
 
 //Handle a client connection to this server
 io.on("connection", socket => {
+
+    socket.join(roomnum)
     console.log(socket.id)
     socket.broadcast.emit(`connect-other`, socket.id)
     socket.on(`send-message`, (message, room) => {
@@ -87,14 +94,68 @@ io.on("connection", socket => {
         callback(`Joined ${room}`); // Call this function with a resolve when a room is joined, this is passed in from the client
     })
 
+    socket.on('sync', (syncVars, id) => {
+        if (id == roomnum.player1) {
+            const player1Pos = {
+                ballPosX: syncVars.ballPosX,
+                ballPosY: syncVars.ballPosY,
+                paddle1X: syncVars.paddle1X,
+                paddle1Y: syncVars.paddle1Y,
+            }
+            console.log("Hi player 1")
+            socket.broadcast.emit('sync-client', player1Pos)
+        } else if (id == roomnum.player2) {
+            console.log("Hi player 2")
+            const player2Pos = {
+                paddle2X: syncVars.paddle2X,
+                paddle2Y: syncVars.paddle2Y
+            }
+            socket.broadcast.emit('sync-client', player2Pos)
+        } else {
+            return;
+        }
+
+    })
+
+    socket.on('start-game', () => {
+        socket.broadcast.emit('receive-game-start');
+    })
+
+    socket.on('player-scored', player => {
+
+        if (player.score >= 2) {
+            socket.broadcast.emit('reset-game', player);
+            return;
+        }
+        socket.broadcast.emit('receive-score', player);
+    })
+
+
     socket.on(`choose-player1`, id => {
+
+        console.log("Current player is " + roomnum.player1);
+        if (roomnum.player1 !== undefined || roomnum.player2 == id) {
+            return;
+        }
         console.log(`${id} is now Player 1.`)
-        socket.broadcast.emit(`assign-player1`, id)
+        roomnum.player1 = id;
+        socket.emit('assign-player1', id)
+        if (roomnum.player2 != undefined) {
+            socket.emit('receive-game-start')
+        }
     })
 
     socket.on(`choose-player2`, id => {
+        console.log("Current player is " + roomnum.player2);
+        if (roomnum.player2 !== undefined || roomnum.player1 == id) {
+            return;
+        }
         console.log(`${id} is now Player 2.`)
-        socket.broadcast.emit(`assign-player2`, id)
+        roomnum.player2 = id;
+        socket.emit(`assign-player2`, id)
+        if (roomnum.player1 != undefined) {
+            socket.broadcast.emit('receive-game-start')
+        }
     })
 
     socket.on(`ping`, n => console.log(n))
