@@ -31,6 +31,7 @@ const options = {
     serveClient: false,
     cookie: false,
     cors: {
+        //origin: "http://localhost:3001/",
         origin: "https://pingpongpong.herokuapp.com/",
         methods: ["GET", "POST"]
     }
@@ -48,6 +49,7 @@ const io = socketIO(server, options);
 
 var expressOptions = {
     origin: "https://pingpongpong.herokuapp.com/"
+    //origin: "http://localhost:3001/"
 }
 app.use(cors(expressOptions));
 
