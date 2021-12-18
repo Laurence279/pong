@@ -96,16 +96,16 @@ io.on("connection", socket => {
 
     socket.on('sync', (syncVars, id) => {
         if (id == roomnum.player1) {
+
             const player1Pos = {
                 ballPosX: syncVars.ballPosX,
                 ballPosY: syncVars.ballPosY,
                 paddle1X: syncVars.paddle1X,
                 paddle1Y: syncVars.paddle1Y,
             }
-            console.log("Hi player 1")
             socket.broadcast.emit('sync-client', player1Pos)
         } else if (id == roomnum.player2) {
-            console.log("Hi player 2")
+
             const player2Pos = {
                 paddle2X: syncVars.paddle2X,
                 paddle2Y: syncVars.paddle2Y
@@ -118,12 +118,12 @@ io.on("connection", socket => {
     })
 
     socket.on('start-game', () => {
-        socket.broadcast.emit('receive-game-start');
+        socket.emit('receive-game-start');
     })
 
     socket.on('player-scored', player => {
 
-        if (player.score >= 2) {
+        if (player.score >= 10) {
             socket.broadcast.emit('reset-game', player);
             return;
         }

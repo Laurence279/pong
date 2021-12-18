@@ -8,7 +8,6 @@ const roomInput = document.getElementById("room-input");
 const form = document.getElementById("form");
 
 const socket = io("https://pingpongpong.herokuapp.com/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
-console.log(socket)
 // userSocket not being used to now, so no authenticating users etc..
 // const userSocket = io(`http://localhost:3000/user`, {
 //     auth: {
@@ -236,6 +235,9 @@ function resetPlayerSlot(slot, paddle) {
         }
 
         function resetBall() {
+            interval = setTimeout(() => {
+                startGame();
+            }, 3000);
             ball.visible = false;
             ball.setPosition(300, 150)
             ball.setVelocity(0)
@@ -305,14 +307,17 @@ function resetPlayerSlot(slot, paddle) {
 
     function startGame() {
         if (gameStarted) return
+
+
         socket.emit('start-game')
         Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(300) : ball.setVelocityX(-300);
         Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(300) : ball.setVelocityY(-300);
         gameStarted = true;
     }
 
+    var interval;
     socket.on('receive-game-start', () => {
-        setInterval(() => {
+        interval = setInterval(() => {
             startGame();
         }, 3000);
     })
@@ -375,9 +380,9 @@ function resetPlayerSlot(slot, paddle) {
 
 
     }
-
     socket.on('sync-client', (syncVars) => {
         if (syncVars.ballPosX !== undefined) {
+
             ball.setPosition(syncVars.ballPosX, syncVars.ballPosY);
         }
         if (syncVars.paddle1X !== undefined) {
