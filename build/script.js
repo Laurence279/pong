@@ -235,9 +235,6 @@ function resetPlayerSlot(slot, paddle) {
         }
 
         function resetBall() {
-            interval = setTimeout(() => {
-                startGame();
-            }, 3000);
             ball.visible = false;
             ball.setPosition(300, 150)
             ball.setVelocity(0)
@@ -290,7 +287,7 @@ function resetPlayerSlot(slot, paddle) {
         });
 
         this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-
+            console.log(gameObject.y)
             gameObject.y = clamp((dragY), min, max)
 
         });
@@ -345,8 +342,6 @@ function resetPlayerSlot(slot, paddle) {
         if (pointer.y > 400) {
             console.log('input disabled on', sprite.key);
             sprite.input.enabled = false;
-
-            sprite.sendToBack();
         }
 
     }

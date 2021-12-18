@@ -123,7 +123,7 @@ io.on("connection", socket => {
 
     socket.on('player-scored', player => {
 
-        if (player.score >= 10) {
+        if (player.score >= 11) {
             socket.broadcast.emit('reset-game', player);
             return;
         }
