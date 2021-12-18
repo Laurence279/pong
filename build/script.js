@@ -308,8 +308,8 @@ function resetPlayerSlot(slot, paddle) {
 
 
         socket.emit('start-game')
-        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(300) : ball.setVelocityX(-300);
-        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(300) : ball.setVelocityY(-300);
+        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(250) : ball.setVelocityX(-250);
+        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(250) : ball.setVelocityY(-250);
         gameStarted = true;
     }
 
