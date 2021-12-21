@@ -100,9 +100,9 @@ io.on("connection", socket => {
         if (id == roomnum.player1) {
             let posX;
             if (syncVars.directionX === 1) {
-                posX = syncVars.ballPosX + 40;
+                posX = syncVars.ballPosX + 60;
             } else {
-                posX = syncVars.ballPosX - 40
+                posX = syncVars.ballPosX - 60
             }
 
             const player1Pos = {
