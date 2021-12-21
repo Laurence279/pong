@@ -252,7 +252,7 @@ function resetPlayerSlot(slot, paddle) {
             player1.score = 0;
             player2.score = 0;
             paddle1.setPosition(50, 150);
-            paddle2.setPosition(550, 150);
+            paddle2.setPosition(950, 200);
             gameStarted = false;
         }
 
