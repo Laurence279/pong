@@ -7,7 +7,7 @@ const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
 const form = document.getElementById("form");
 
-const socket = io("https://pingpongpong.herokuapp.com/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
+const socket = io("localhost:3001"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
 //const socket = io("http://localhost:3001/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
 // userSocket not being used to now, so no authenticating users etc..
 // const userSocket = io(`http://localhost:3000/user`, {
@@ -350,7 +350,7 @@ function resetPlayerSlot(slot, paddle) {
 
 
     const min = 45;
-    const max = 255;
+    const max = 355;
 
     // Clamp number between two values with the following line:
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
