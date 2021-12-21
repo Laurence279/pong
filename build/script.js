@@ -398,12 +398,7 @@ function resetPlayerSlot(slot, paddle) {
     }
     socket.on('sync-client', (syncVars) => {
         if (syncVars.ballPosX !== undefined && syncVars.ballPosX !== 500) {
-            console.log(syncVars.direction)
-            if (syncVars.directionX === 1) {
-                ball.setPosition(syncVars.ballPosX + 60, syncVars.ballPosY);
-            } else {
-                ball.setPosition(syncVars.ballPosX - 30, syncVars.ballPosY);
-            }
+            ball.setPosition(syncVars.ballPosX, syncVars.ballPosY);
 
         }
         if (syncVars.paddle1X !== undefined) {
