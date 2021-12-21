@@ -100,7 +100,7 @@ io.on("connection", socket => {
         if (id == roomnum.player1) {
 
             const player1Pos = {
-                ballPosX: syncVars.ballPosX,
+                ballPosX: syncVars.ballPosX + 50,
                 ballPosY: syncVars.ballPosY,
                 paddle1X: syncVars.paddle1X,
                 paddle1Y: syncVars.paddle1Y,
