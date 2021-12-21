@@ -107,7 +107,7 @@ io.on("connection", socket => {
 
             const player1Pos = {
                 ballPosX: posX,
-                ballPosY: posY,
+                ballPosY: syncVars.ballPosY,
                 paddle1X: syncVars.paddle1X,
                 paddle1Y: syncVars.paddle1Y
             }
