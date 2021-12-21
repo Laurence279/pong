@@ -127,8 +127,8 @@ function resetPlayerSlot(slot, paddle) {
 (function () {
     var config = {
         type: Phaser.AUTO,
-        width: 600,
-        height: 300,
+        width: 1000,
+        height: 400,
         physics: {
             default: 'arcade',
             arcade: {
@@ -180,7 +180,7 @@ function resetPlayerSlot(slot, paddle) {
     function create() {
         var myself = this;
 
-        this.add.image(300, 150, 'sky');
+        this.add.image(500, 300, 'sky');
 
         bounds = this.physics.add.staticGroup();
         paddles = this.physics.add.group();
@@ -189,21 +189,21 @@ function resetPlayerSlot(slot, paddle) {
         wallLeft.name = "wallLeft"
         wallLeft.setTint(0xff0000)
 
-        wallRight = bounds.create(650, 150, 'wall');
+        wallRight = bounds.create(1050, 150, 'wall');
         wallRight.name = "wallRight"
         wallRight.setTint(0xff0000)
 
-        paddle1 = paddles.create(50, 150, 'paddle');
+        paddle1 = paddles.create(50, 200, 'paddle');
         paddle1.setInteractive();
         paddle1.body.immovable = true;
-        paddle2 = paddles.create(550, 150, 'paddle')
+        paddle2 = paddles.create(950, 200, 'paddle')
         paddle2.setInteractive();
         paddle2.body.immovable = true;
-        ball = this.physics.add.sprite(300, 150, 'ball')
+        ball = this.physics.add.sprite(500, 200, 'ball')
         ball.setCollideWorldBounds(true);
         ball.setBounce(1)
 
-        scoreText = this.add.text(242, 0, `${player1.score}:${player2.score}`, {
+        scoreText = this.add.text(442, 0, `${player1.score}:${player2.score}`, {
             fontSize: '64px',
             fill: '#000'
         })
@@ -308,8 +308,8 @@ function resetPlayerSlot(slot, paddle) {
 
 
         socket.emit('start-game')
-        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(250) : ball.setVelocityX(-250);
-        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(250) : ball.setVelocityY(-250);
+        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(300) : ball.setVelocityX(-300);
+        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(300) : ball.setVelocityY(-300);
         gameStarted = true;
     }
 
