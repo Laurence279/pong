@@ -7,8 +7,8 @@ const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
 const form = document.getElementById("form");
 
-const socket = io("https://pingpongpong.herokuapp.com/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
-//const socket = io("http://localhost:3001/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
+//const socket = io("https://pingpongpong.herokuapp.com/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
+const socket = io("http://localhost:3001/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
 // userSocket not being used to now, so no authenticating users etc..
 // const userSocket = io(`http://localhost:3000/user`, {
 //     auth: {
@@ -308,8 +308,9 @@ function resetPlayerSlot(slot, paddle) {
 
 
         socket.emit('start-game')
-        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(300) : ball.setVelocityX(-300);
-        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(300) : ball.setVelocityY(-300);
+        // Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(300) : ball.setVelocityX(-300);
+        // Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(300) : ball.setVelocityY(-300);
+        ball.setVelocityX(1000);
         gameStarted = true;
     }
 
