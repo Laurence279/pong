@@ -241,7 +241,7 @@ function resetPlayerSlot(slot, paddle) {
 
         function resetBall() {
             ball.visible = false;
-            ball.setPosition(300, 150)
+            ball.setPosition(500, 200)
             ball.setVelocity(0)
             ball.visible = true;
             gameStarted = false;
@@ -397,7 +397,7 @@ function resetPlayerSlot(slot, paddle) {
 
     }
     socket.on('sync-client', (syncVars) => {
-        if (syncVars.ballPosX !== undefined) {
+        if (syncVars.ballPosX !== undefined && syncVars.ballPosX !== 500) {
             console.log(syncVars.direction)
             if (syncVars.directionX === 1) {
                 ball.setPosition(syncVars.ballPosX + 30, syncVars.ballPosY);
