@@ -151,6 +151,10 @@ function resetPlayerSlot(slot, paddle) {
     var paddle2;
     var bounds;
     var ball;
+    var lastBallPosX;
+    var lastBallPosY;
+    var ballDirX;
+    var ballDirY;
     var gameStarted;
 
     var wallLeft;
@@ -365,7 +369,21 @@ function resetPlayerSlot(slot, paddle) {
     }
 
     function syncGame() {
+        if (lastBallPosX < ball.x) {
+            ballDirX = 1;
+        } else {
+            ballDirX = -1;
+        }
+        if (lastBallPosY < ball.y) {
+            ballDirY = 1;
+        } else {
+            ballDirY = -1;
+        }
+        lastBallPosX = ball.x;
+        lastBallPosY = ball.y;
         const syncVars = {
+            directionX: ballDirX,
+            directionY: ballDirY,
             ballPosX: ball.x,
             ballPosY: ball.y,
             paddle1X: paddle1.x,
@@ -376,11 +394,17 @@ function resetPlayerSlot(slot, paddle) {
         socket.emit('sync', syncVars, socket.id)
 
 
+
     }
     socket.on('sync-client', (syncVars) => {
         if (syncVars.ballPosX !== undefined) {
+            console.log(syncVars.direction)
+            if (syncVars.directionX === 1) {
+                ball.setPosition(syncVars.ballPosX + 30, syncVars.ballPosY);
+            } else {
+                ball.setPosition(syncVars.ballPosX - 30, syncVars.ballPosY);
+            }
 
-            ball.setPosition(syncVars.ballPosX - 20, syncVars.ballPosY);
         }
         if (syncVars.paddle1X !== undefined) {
             paddle1.setPosition(syncVars.paddle1X, syncVars.paddle1Y);
@@ -392,6 +416,7 @@ function resetPlayerSlot(slot, paddle) {
 
 
     })
+
 
 
     function update() {

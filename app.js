@@ -100,10 +100,11 @@ io.on("connection", socket => {
         if (id == roomnum.player1) {
 
             const player1Pos = {
-                ballPosX: syncVars.ballPosX + 50,
+                direction: syncVars.directionX,
+                ballPosX: syncVars.ballPosX,
                 ballPosY: syncVars.ballPosY,
                 paddle1X: syncVars.paddle1X,
-                paddle1Y: syncVars.paddle1Y,
+                paddle1Y: syncVars.paddle1Y
             }
             socket.broadcast.emit('sync-client', player1Pos)
         } else if (id == roomnum.player2) {
