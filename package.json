@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "@geckos.io/snapshot-interpolation": "^1.1.0",
     "@socket.io/admin-ui": "^0.2.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",

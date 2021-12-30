@@ -14,7 +14,8 @@ requests over and over.
 //     }
 // });
 
-
+const SnapshotInterpolation = require('@geckos.io/snapshot-interpolation');
+const SI = new SnapshotInterpolation.SnapshotInterpolation();
 const express = require(`express`);
 var cors = require('cors')
 const app = express();
@@ -31,8 +32,8 @@ const options = {
     serveClient: false,
     cookie: false,
     cors: {
-        //origin: "http://localhost:3001/",
-        origin: "https://pingpongpong.herokuapp.com/",
+        origin: "http://localhost:3001/",
+        //origin: "https://pingpongpong.herokuapp.com/",
         methods: ["GET", "POST"]
     }
 };
@@ -96,30 +97,11 @@ io.on("connection", socket => {
         callback(`Joined ${room}`); // Call this function with a resolve when a room is joined, this is passed in from the client
     })
 
-    socket.on('sync', (syncVars, id) => {
-        if (id == roomnum.player1) {
 
-            const player1Pos = {
-                ballPosX: syncVars.ballPosX,
-                ballPosY: syncVars.ballPosY,
-                paddle1X: syncVars.paddle1X,
-                paddle1Y: syncVars.paddle1Y
-            }
-            socket.broadcast.emit('sync-client', player1Pos)
-        } else if (id == roomnum.player2) {
-
-            const player2Pos = {
-                paddle2X: syncVars.paddle2X,
-                paddle2Y: syncVars.paddle2Y
-            }
-            socket.broadcast.emit('sync-client', player2Pos)
-        } else {
-            return;
-        }
-
-    })
 
     socket.on('start-game', () => {
+
+        gameStarted = true;
         socket.emit('receive-game-start');
     })
 
@@ -161,8 +143,33 @@ io.on("connection", socket => {
     })
 
     socket.on(`ping`, n => console.log(n))
-})
 
-instrument(io, {
-    auth: false
-});
+
+    socket.on('sync', (syncVars, id) => {
+
+        if (id == roomnum.player1) {
+
+            const player1Pos = {
+                ballPosX: syncVars.ballPosX,
+                ballPosY: syncVars.ballPosY,
+                paddle1X: syncVars.paddle1X,
+                paddle1Y: syncVars.paddle1Y
+            }
+            socket.broadcast.emit('sync-client', player1Pos)
+        } else if (id == roomnum.player2) {
+
+            const player2Pos = {
+                paddle2X: syncVars.paddle2X,
+                paddle2Y: syncVars.paddle2Y
+            }
+            socket.broadcast.emit('sync-client', player2Pos)
+        } else {
+            return;
+        }
+
+    })
+
+    instrument(io, {
+        auth: false
+    })
+})

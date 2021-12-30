@@ -1,14 +1,14 @@
 import {
     io
 } from "./_snowpack/pkg/socket.io-client.js";
-
+const SI = new SnapshotInterpolation(60)
 const joinRoomButton = document.getElementById("room-btn");
 const messageInput = document.getElementById("message-input");
 const roomInput = document.getElementById("room-input");
 const form = document.getElementById("form");
 
-const socket = io("https://pingpongpong.herokuapp.com/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
-//const socket = io("http://localhost:3001/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
+//const socket = io("https://pingpongpong.herokuapp.com/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
+const socket = io("http://localhost:3001/"); // WHICH SOCKET SERVER DO I CONNECT TO? NEEDS TO MATCH THE SERVER PORT PASSED INTO THE SOCKET PACKAGE..
 // userSocket not being used to now, so no authenticating users etc..
 // const userSocket = io(`http://localhost:3000/user`, {
 //     auth: {
@@ -92,6 +92,7 @@ player1Btn.addEventListener("click", function (e) {
 
     if (player2Btn.enabled === true) return
     if (player1Btn.enabled === true) {
+
         resetPlayerSlot(player1Btn, player1Paddle);
         return;
     }
@@ -116,7 +117,6 @@ player2Btn.addEventListener("click", function (e) {
 })
 
 function resetPlayerSlot(slot, paddle) {
-    paddle.onmousedown = "";
     slot.enabled = false;
     slot.classList.remove('selected');
     slot.text.innerText = "Open";
@@ -272,6 +272,20 @@ function resetPlayerSlot(slot, paddle) {
             enableDrag(paddle2);
         })
 
+        socket.on(`unassign-player1`, id => {
+            displayMessage(`${id.substring(0,4)} is no longer Player 1.`)
+            player1Btn.classList.remove('selected');
+            player1Btn.text.innerText = "Open";
+            disableDrag(paddle1);
+        })
+
+        socket.on(`unassign-player2`, id => {
+            displayMessage(`${id.substring(0,4)} is no longer Player 2.`)
+            player2Btn.classList.remove('selected');
+            player2Btn.text.innerText = "Open";
+            disableDrag(paddle2);
+        })
+
         socket.on('receive-score', player => {
             player.name === "Player 1" ? player1.score = player.score :
                 player2.score = player.score;
@@ -283,7 +297,11 @@ function resetPlayerSlot(slot, paddle) {
         })
 
         function enableDrag(paddle) {
-            myself.input.setDraggable(paddle);
+            myself.input.setDraggable(paddle, true);
+        }
+
+        function disableDrag(paddle) {
+            myself.input.setDraggable(paddle, false)
         }
 
         this.input.on('dragstart', function (pointer, gameObject) {
@@ -312,9 +330,9 @@ function resetPlayerSlot(slot, paddle) {
 
 
         socket.emit('start-game')
-        // Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(300) : ball.setVelocityX(-300);
-        // Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(300) : ball.setVelocityY(-300);
-        ball.setVelocityX(1000);
+        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityX(500) : ball.setVelocityX(-500);
+        Math.floor(Math.random() * 2 + 1) === 1 ? ball.setVelocityY(500) : ball.setVelocityY(-500);
+        //ball.setVelocityX(1000);
         gameStarted = true;
     }
 
@@ -369,21 +387,10 @@ function resetPlayerSlot(slot, paddle) {
     }
 
     function syncGame() {
-        if (lastBallPosX < ball.x) {
-            ballDirX = 1;
-        } else {
-            ballDirX = -1;
-        }
-        if (lastBallPosY < ball.y) {
-            ballDirY = 1;
-        } else {
-            ballDirY = -1;
-        }
+
         lastBallPosX = ball.x;
         lastBallPosY = ball.y;
         const syncVars = {
-            directionX: ballDirX,
-            directionY: ballDirY,
             ballPosX: ball.x,
             ballPosY: ball.y,
             paddle1X: paddle1.x,
@@ -417,6 +424,9 @@ function resetPlayerSlot(slot, paddle) {
     function update() {
         updateScore();
         syncGame();
+
+
+
     }
 
     //#region Non-Phaser Code
